@@ -41,7 +41,7 @@ fn main() {
         let _ = std::io::stdout().flush();
         std::io::stdin()
             .read_line(&mut u_seq)
-            .expect("An error has occured in inserting the first sequence");
+            .expect("An error has ocurred in inserting the first sequence");
         
         // It removes the newline added.
         u_seq.pop();
@@ -50,7 +50,7 @@ fn main() {
         let _ = std::io::stdout().flush();
         std::io::stdin()
             .read_line(&mut v_seq)
-            .expect("An error has occured in inserting the second sequence");
+            .expect("An error has ocurred in inserting the second sequence");
 
         // It removes the newline added.
         v_seq.pop();
@@ -69,7 +69,7 @@ fn main() {
     let _ = std::io::stdout().flush();
     std::io::stdin()
         .read_line(&mut option)
-        .expect("An error has occured in inserting the user option");
+        .expect("An error has ocurred in inserting the user option");
 
     match option.as_str() {
         "1\n" => {
