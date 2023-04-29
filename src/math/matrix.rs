@@ -144,7 +144,7 @@ where
     /// Prints the matrix to the standard output.
     ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// let m = Matrix::<i32>::new(4, 5, 1);
     ///
@@ -167,6 +167,73 @@ where
             }
             println!("");
         }
+    }
+}
+
+impl<T> Matrix<T> 
+where 
+    T: std::cmp::PartialOrd 
+{
+    /// Returns a reference to the maximum value in the matrix.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let mut m = Matrix::<i32>::new(4, 4, 0);
+    ///
+    /// m[1][1] = 20;
+    /// m[2][3] = 80;
+    ///
+    /// assert_eq!(m.max(), 80);
+    /// ```
+    pub fn max(&self) -> &T {
+        let mut max_value: &T = &self[0][0];
+
+        for i in 0..self.row() {
+            for j in 0..self.col() {
+                if max_value < &self[i][j] {
+                    max_value = &self[i][j];
+                }
+            }
+        }
+
+        max_value
+    }
+    
+    /// Returns a tuple containing the reference to the maximum value as
+    /// the first component, as the remaining components represents the
+    /// `(i, j)` coordinates of the maximum value in the matrix.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let mut m = Matrix::<i32>::new(4, 4, 0);
+    ///
+    /// m[1][1] = 20;
+    /// m[2][3] = 80;
+    ///
+    /// let (max_value, i, j) = m.max_with_pos();
+    ///
+    /// assert_eq!(max_value, 80);
+    /// assert_eq!(i, 2);
+    /// assert_eq!(j, 3);
+    /// ```
+    pub fn max_with_pos(&self) -> (&T, usize, usize) {
+        let mut max_value: &T = &self[0][0];
+        let mut i_pos = 0usize;
+        let mut j_pos = 0usize;
+
+        for i in 0..self.row() {
+            for j in 0..self.col() {
+                if max_value < &self[i][j] {
+                    max_value = &self[i][j];
+                    i_pos = i;
+                    j_pos = j;
+                }
+            }
+        }
+
+        (max_value, i_pos, j_pos)
     }
 }
 
