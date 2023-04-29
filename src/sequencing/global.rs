@@ -1,17 +1,56 @@
 use crate::math::matrix::Matrix;
 
+/// Global Alignment Options.
+///
+/// This structure provides a manner to specify the `score` function that
+/// comprises the `match` point, `mismatch` point and `gap` point.
+///
+/// # Examples
+///
+/// ```
+/// let opt = Options {
+///     match_: 5,
+///     mismatch: -3,
+///     gap: -4,
+/// };
+/// ```
+///
+/// The code snippet above defines a function with match point equals to `5`,
+/// mismatch point equals to `-3` and gap point equals to `-4`.
 pub struct Options {
     pub match_: i8,
     pub mismatch: i8,
     pub gap: i8,
 }
 
-/// It applies the global alignment between the specified sequences using the
+/// Align two sequences globally.
+///
+/// Further, a tuple is returned containing in the first component the constructed
+/// `matrix` used to calculate the alignment score and the second component that is
+/// used by the alignment printers that contains the `arrow`s.
+///
+/// It applies the global alignment between the two specified sequences using the
 /// Needleman-Wunsch algorithm.
 ///
-/// Further, it can be specified the score function by the `opt`, in which is
-/// a structure that provides a way to configure the `match`, `mismatch` and `gap`
-/// points from the score function.
+/// Moreover, it must be specified the `score` function by the [`Options`] structure,
+/// the alignment is dependented from the score function. Therefore, for different score
+/// functions, different alignment may be produced.
+///
+/// # Examples
+///
+/// ```
+/// let (s, b) = align_global("AAAGATACCA", "GGGACTTAGA", &Options { match_: 5, mismatch: -3, gap: -4 } );
+///
+/// print_align_global(b, "AAAGATACCA", "GGGACTTAGA");
+/// ```
+///
+/// The code snippet above performs the global alignment between the two specified sequences
+/// being them `AAAGATACCA` and `GGGACTTAGA` and prints the global alignment.
+///
+/// ```text
+/// AAGA--TACCA
+/// GGGACTTA-GA
+/// ```
 pub fn align_global(u: &str, v: &str, opt: &Options) -> (Matrix<i32>, Matrix<char>) {
     let mut s = Matrix::<i32>::new(u.len() + 1, v.len() + 1, 0i32);
     let mut b = Matrix::<char>::new(u.len() + 1, v.len() + 1, ' ');
@@ -55,17 +94,64 @@ pub fn align_global(u: &str, v: &str, opt: &Options) -> (Matrix<i32>, Matrix<cha
     (s, b)
 }
 
+/// Prints the global alignment between the sequences `u` and `v`.
+///
+/// Receiveing the `b` that represents the matrix containing the
+/// previously constructed `arrow` matrix and the two sequences
+/// being aligned, the global alignment is printed to the standard
+/// output.
+///
+/// # Examples
+///
+/// ```
+/// let (s, b) = align_global("AAAGATACCA", "GGGACTTAGA", &Options { match_: 5, mismatch: -3, gap: -4 } );
+///
+/// print_align_global(b, "AAAGATACCA", "GGGACTTAGA");
+/// ```
+///
+/// The code snippet above performs the global alignment between the two specified sequences
+/// being them `AAAGATACCA` and `GGGACTTAGA` and prints the global alignment.
+///
+/// ```text
+/// AAGA--TACCA
+/// GGGACTTA-GA
+/// ```
 pub fn print_align_global(b: &Matrix<char>, u: &str, v: &str) {
     let mut aligned_u = String::from("");
     let mut aligned_v = String::from("");
 
-    print_align_global_rec(b, u, v, &mut aligned_u, &mut aligned_v, b.row() - 1, b.col() - 1);
-    
+    print_align_global_rec(
+        b,
+        u,
+        v,
+        &mut aligned_u,
+        &mut aligned_v,
+        b.row() - 1,
+        b.col() - 1,
+    );
+
     println!("{}", aligned_u.chars().rev().collect::<String>());
     println!("{}", aligned_v.chars().rev().collect::<String>());
 }
 
-fn print_align_global_rec(b: &Matrix<char>, u: &str, v: &str, aligned_u: &mut String, aligned_v: &mut String, i: usize, j: usize) {
+/// Prints the global alignment between two sequences `u` and `v`.
+/// 
+/// This function performs the printing of the global alignment recursively.
+/// Moreover, this function is set `private` because it requests much arguments
+/// to perform the printing and some of its arguments are not needed to be
+/// initialized by the library users.
+///
+/// Therefore, the function [`print_align_global`] is used to provide a easier
+/// way to print the global alignment between two sequences.
+fn print_align_global_rec(
+    b: &Matrix<char>,
+    u: &str,
+    v: &str,
+    aligned_u: &mut String,
+    aligned_v: &mut String,
+    i: usize,
+    j: usize,
+) {
     if i == 0 || j == 0 {
         return;
     }
