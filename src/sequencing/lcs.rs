@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-use crate::matrix::Matrix;
+use crate::math::matrix::Matrix;
 
 /// It calculates the `longest common subsequence` between the two given
 /// sequences `u` and `v`.

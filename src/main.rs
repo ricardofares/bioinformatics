@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-use bioinformatics::lcs::{lcs, print_lcs};
+use bioinformatics::sequencing::lcs::{lcs, print_lcs};
 use std::env;
 
 fn main() {
