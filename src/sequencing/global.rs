@@ -34,7 +34,7 @@ pub struct Options {
 ///
 /// Moreover, it must be specified the `score` function by the [`Options`] structure,
 /// the alignment is dependented from the score function. Therefore, for different score
-/// functions, different alignment may be produced.
+/// functions, different alignments may be produced.
 ///
 /// # Examples
 ///
@@ -141,7 +141,7 @@ pub fn print_align_global(b: &Matrix<char>, u: &str, v: &str) {
 /// to perform the printing and some of its arguments are not needed to be
 /// initialized by the library users.
 ///
-/// Therefore, the function [`print_align_global`] is used to provide a easier
+/// Therefore, the function [`print_align_global`] is used to provide an easier
 /// way to print the global alignment between two sequences.
 fn print_align_global_rec(
     b: &Matrix<char>,
