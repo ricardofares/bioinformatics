@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-use bioinformatics::sequencing::global::{align_global, print_align_global, Options};
+use bioinformatics::sequencing::global;
 use bioinformatics::sequencing::lcs::{lcs, print_lcs};
+use bioinformatics::sequencing::local;
 use std::env;
 use std::io::Write;
 
@@ -42,7 +43,7 @@ fn main() {
         std::io::stdin()
             .read_line(&mut u_seq)
             .expect("An error has ocurred in inserting the first sequence");
-        
+
         // It removes the newline added.
         u_seq.pop();
 
@@ -63,7 +64,8 @@ fn main() {
     println!("\nWhich algorithm would you like to apply?: \n");
     println!(" 1. Longest Common Subsequence.");
     println!(" 2. Needleman-Wunsch (Global Sequence Aligment).");
-    println!(" 3. Exit.");
+    println!(" 3. Smith-Waterman (Local Sequence Alignment).");
+    println!(" 4. Exit.");
     print!("\nOption: ");
 
     let _ = std::io::stdout().flush();
@@ -71,8 +73,11 @@ fn main() {
         .read_line(&mut option)
         .expect("An error has ocurred in inserting the user option");
 
+    // It removes the trailing newline.
+    option.pop();
+
     match option.as_str() {
-        "1\n" => {
+        "1" => {
             // It calculates the longest common subsequence.
             let (_s, b) = lcs(u_seq.as_str(), v_seq.as_str());
 
@@ -80,7 +85,7 @@ fn main() {
             println!("\nThe longest common subsequence is: ");
             print_lcs(b, u_seq.as_str());
         }
-        "2\n" => {
+        "2" | "3" => {
             let mut match_str = String::from("");
             let mut mismatch_str = String::from("");
             let mut gap_str = String::from("");
@@ -113,19 +118,48 @@ fn main() {
                 .expect("Mismatch point is not an integer");
             let gap = gap_str.trim().parse().expect("Gap point is not an integer");
 
-            // It calculates the global alignment between the sequences.
-            let (s, b) = align_global(
-                u_seq.as_str(),
-                v_seq.as_str(),
-                &Options {
-                    match_,
-                    mismatch,
-                    gap,
-                },
-            );
+            match option.as_str() {
+                "2" => {
+                    // It calculates the global alignment between the sequences.
+                    let (s, b) = global::align_global(
+                        u_seq.as_str(),
+                        v_seq.as_str(),
+                        &global::Options {
+                            match_,
+                            mismatch,
+                            gap,
+                        },
+                    );
 
-            println!("\nThe global sequence alignment with maximum score {} is: ", s[s.row() - 1][s.col() - 1]);
-            print_align_global(&b, &u_seq, &v_seq);
+                    println!(
+                        "\nThe global sequence alignment with maximum score {} is: ",
+                        s[s.row() - 1][s.col() - 1]
+                    );
+                    global::print_align_global(&b, &u_seq, &v_seq);
+                }
+                "3" => {
+                    // It calculates the global alignment between the sequences.
+                    let (s, b) = local::align_local(
+                        u_seq.as_str(),
+                        v_seq.as_str(),
+                        &local::Options {
+                            match_,
+                            mismatch,
+                            gap,
+                        },
+                    );
+
+                    println!(
+                        "\nThe local sequence alignment with maximum score {} is: ",
+                        s.max()
+                    );
+                    local::print_align_local(&s, &b, &u_seq, &v_seq);
+                }
+                _ => {
+                    eprintln!("Unreachable type. It must be `2` or `3`.");
+                    std::process::exit(1);
+                }
+            }
         }
         _ => {
             std::process::exit(0);
