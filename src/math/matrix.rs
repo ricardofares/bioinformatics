@@ -23,6 +23,58 @@
  */
 use std::ops::{Index, IndexMut};
 
+/// An arbitrary dimension matrix.
+///
+/// # Examples
+///
+/// ```
+/// let mut m = Matrix::<i32>::new(2, 3, 0);
+/// m[0][0] = 1;
+/// m[1][1] = 2;
+///
+/// assert_eq!(m.row(), 2);
+/// assert_eq!(m.col(), 3);
+/// assert_eq!(m[0][0], 1);
+/// assert_eq!(m[1][1], 2);
+/// ```
+///
+/// The code snippet above creates a 32-bit integer typed matrix
+/// with 2 rows and 3 columns with all of its values initialized
+/// to 0.
+///
+/// # Properties
+///
+/// Functions are provided to access the matrix properties. For instance,
+/// it can be accessed the matrix dimensions by the functions [`row`] and
+/// [`col`] which returns the amount of rows and columns, respectively.
+///
+/// # Printing
+///
+/// Still, if the matrix element type is [`std::fmt::Display`]ed, then the
+/// matrix can be printed using the function [`print`].
+///
+/// ## Example
+///
+/// For instance, suppose the following matrix definition.
+///
+/// ```
+/// let m = Matrix::<i32>::new(4, 4, 1);
+///
+/// m.print();
+/// ```
+///
+/// Once it is run, the output is
+///
+/// ```text
+/// 1111
+/// 1111
+/// 1111
+/// 1111
+/// ```
+///
+/// [`row`]: Matrix::row
+/// [`col`]: Matrix::col
+/// [`print`]: Matrix::print
 pub struct Matrix<T> {
     /// It stores the amount of rows this matrix has.
     row: usize,
@@ -35,12 +87,28 @@ pub struct Matrix<T> {
 }
 
 impl<T> Matrix<T> {
-    /// It returns the amount rows in the matrix.
+    /// Returns the amount of rows.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let m = Matrix::<i32>::new(5, 4, 0);
+    ///
+    /// assert_eq!(m.row(), 5);
+    /// ```
     pub fn row(&self) -> usize {
         self.row
     }
 
-    /// It returns the amount of columns in the matrix.
+    /// Returns the amount of columns.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let m = Matrix::<i32>::new(5, 4, 0);
+    ///
+    /// assert_eq!(m.col(), 4);
+    /// ```
     pub fn col(&self) -> usize {
         self.col
     }
@@ -50,24 +118,22 @@ impl<T> Matrix<T>
 where
     T: Copy,
 {
-    /// It constructss a matrix with the specified dimension and with
-    /// the specified default value set to all of its matrix's cells.
+    /// Constructs a new `row` by `col` [`Matrix`] initialized with `default_value`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let m = Matrix::<i32>::new(2, 3, 10);
+    /// ```
+    ///
+    /// The code snippet above creates a matrix with `2` rows and `3` columns with
+    /// all of its values set as `10`.
     pub fn new(row: usize, col: usize, default_value: T) -> Self {
-        let mut m = Self {
+        Self {
             row,
             col,
-            matrix: Vec::<Vec<T>>::with_capacity(row),
-        };
-
-        // Initializes the matrix with the default value.
-        for i in 0..row {
-            m.matrix.push(Vec::<T>::with_capacity(col));
-            for _j in 0..col {
-                m[i].push(default_value);
-            }
+            matrix: vec![vec![default_value; col]; row],
         }
-
-        m
     }
 }
 
@@ -75,6 +141,25 @@ impl<T> Matrix<T>
 where
     T: std::fmt::Display,
 {
+    /// Prints the matrix to the standard output.
+    ///
+    /// # Examples
+    /// 
+    /// ```
+    /// let m = Matrix::<i32>::new(4, 5, 1);
+    ///
+    /// m.print();
+    /// ```
+    ///
+    /// The code snippet above once is run, it will print to
+    /// the standard output the following.
+    ///
+    /// ```text
+    /// 11111
+    /// 11111
+    /// 11111
+    /// 11111
+    /// ```
     pub fn print(&self) {
         for i in 0..self.row {
             for j in 0..self.col {
@@ -88,12 +173,14 @@ where
 impl<T> Index<usize> for Matrix<T> {
     type Output = Vec<T>;
 
+    /// Returns a reference to the `row`-th matrix row.
     fn index(&self, row: usize) -> &Self::Output {
         &self.matrix[row]
     }
 }
 
 impl<T> IndexMut<usize> for Matrix<T> {
+    /// Returns a mutable reference to the `row`-th matrix row.
     fn index_mut(&mut self, row: usize) -> &mut Self::Output {
         &mut self.matrix[row]
     }
