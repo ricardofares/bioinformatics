@@ -63,22 +63,15 @@ pub fn align_local(u: &str, v: &str, opt: &Options) -> (Matrix<i32>, Matrix<char
     let mut s = Matrix::<i32>::new(u.len() + 1, v.len() + 1, 0i32);
     let mut b = Matrix::<char>::new(u.len() + 1, v.len() + 1, ' ');
 
-    // It initializes the first row with the multiples of the gap.
-    for i in 0..s.row() {
-        s[i][0] = (i as i32) * (opt.gap as i32);
-    }
-
-    // It initializes the first column with the multiple of the gap.
-    for j in 1..s.col() {
-        s[0][j] = (j as i32) * (opt.gap as i32);
-    }
+    let u_chars = u.chars().collect::<Vec<char>>();
+    let v_chars = v.chars().collect::<Vec<char>>();
 
     // It calculates the matrix values using the previously specified
     // score function (match, mismatch and gap).
     for i in 1..s.row() {
         for j in 1..s.col() {
             let diagonal = s[i - 1][j - 1]
-                + (if u.chars().nth(i - 1).unwrap() == v.chars().nth(j - 1).unwrap() {
+                + (if u_chars[i - 1] == v_chars[j - 1] { 
                     opt.match_ as i32
                 } else {
                     opt.mismatch as i32

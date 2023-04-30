@@ -65,12 +65,15 @@ pub fn align_global(u: &str, v: &str, opt: &Options) -> (Matrix<i32>, Matrix<cha
         s[0][j] = (j as i32) * (opt.gap as i32);
     }
 
+    let u_chars = u.chars().collect::<Vec<char>>();
+    let v_chars = v.chars().collect::<Vec<char>>();
+
     // It calculates the matrix values using the previously specified
     // score function (match, mismatch and gap).
     for i in 1..s.row() {
         for j in 1..s.col() {
             let diagonal = s[i - 1][j - 1]
-                + (if u.chars().nth(i - 1).unwrap() == v.chars().nth(j - 1).unwrap() {
+                + (if u_chars[i - 1] == v_chars[j - 1] {
                     opt.match_ as i32
                 } else {
                     opt.mismatch as i32
@@ -135,7 +138,7 @@ pub fn print_align_global(b: &Matrix<char>, u: &str, v: &str) {
 }
 
 /// Prints the global alignment between two sequences `u` and `v`.
-/// 
+///
 /// This function performs the printing of the global alignment recursively.
 /// Moreover, this function is set `private` because it requests much arguments
 /// to perform the printing and some of its arguments are not needed to be
