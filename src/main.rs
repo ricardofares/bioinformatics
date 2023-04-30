@@ -65,7 +65,8 @@ fn main() {
     println!(" 1. Longest Common Subsequence.");
     println!(" 2. Needleman-Wunsch (Global Sequence Aligment).");
     println!(" 3. Smith-Waterman (Local Sequence Alignment).");
-    println!(" 4. Exit.");
+    println!(" 4. Hamming Distance.");
+    println!(" 5. Exit.");
     print!("\nOption: ");
 
     let _ = std::io::stdout().flush();
@@ -161,6 +162,12 @@ fn main() {
                 }
             }
         }
+        "4" => {
+            match bioinformatics::sequencing::hamming(&u_seq, &v_seq) {
+                Ok(distance) => println!("\nThe hamming distance is {}.", distance),
+                Err(message) => println!("{}", message),
+            };
+        },
         _ => {
             std::process::exit(0);
         }
